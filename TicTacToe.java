@@ -2,7 +2,7 @@ public class TicTacToe extends TurnBasedGame {
 
 	String[8][8] gameboard;
 
-	//make board generator
+	//make board generator for us
 
 	public TicTacToe(Player player1, Player player2) {
 		super(player1, player2);
