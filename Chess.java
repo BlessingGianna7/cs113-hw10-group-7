@@ -1,4 +1,4 @@
-public class TicTacToe extends TurnBasedGame {
+public class Chess extends TurnBasedGame {
 
 	String[8][8] gameboard;
 
