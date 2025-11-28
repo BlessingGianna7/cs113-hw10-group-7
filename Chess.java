@@ -1,21 +1,25 @@
+import java.util.Scanner;
+
 public class Chess extends TurnBasedGame {
 
 	String[8][8] gameboard;
 
-	//make board generator for us
+	//make board generator
 
-	public TicTacToe(Player player1, Player player2) {
+	public Chess(Player player1, Player player2) {
 		super(player1, player2);
 	}
-//add to check if [i][j] is their own
-	private boolean isValidPosition(int position) {
-		if(position >= 0 && position <= 8 && gameboard[position].equals(" ")) {
+	//check if position is within bounds
+	private boolean isValidPosition(int i, int j) {
+		if (i < 0 || j < 0 ) return false;
+		if (i >= gameboard.length || j >= gameboard[i].length){
+			 return false;
+		} else {
 			return true;
 		}
-		else {
-			return false;
-		}
 	}
+
+
 //make a HasBlackOne and a HasWhiteOne
 	private boolean hasThreeInARow(String marker) {
 		boolean flag0 = gameboard[0].equals(marker);
@@ -69,28 +73,92 @@ public class Chess extends TurnBasedGame {
 		}
 	}
 
-	protected void evaluateMove(String move) {
-//PARSE 4 THINGS
-		int position = Integer.parseInt(move);
-		if(isFirstPlayerTurn()) {
-			if(!isValidPosition(position)) {
-				// throw new IllegalArgumentException("Player 1's move was invalid.");
-				this.evaluateMove(player1.makeOneMove());
+	protected void evaluateMove(int m, int n, int i, int j) {
+	    Scanner scanner = new Scanner(System.in);
+ 		if (!isValidPosition(i, j) || !isValidPosition(m, n)) {
+       	 throw new IllegalArgumentException("Position out of bounds");
+        }
+
+		//player 1's turn X
+		if (isFirstPlayerTurn()) {
+			//check if piece belongs to player
+        	if (!gameboard[i][j].equals("X")) {
+           		throw new IllegalArgumentException("That's not your piece!");
+        	}
+			//check if there is pawn to capture
+			if(isValidPosition(i + 1, j - 1) && gameboard[i + 1][j - 1].equals("O") || isValidPosition(i + 1, j + 1) && gameboard[i + 1][j + 1].equals("O")) {
+				 System.out.println("There's a pawn you can capture! Do you want to capture? (yes/no)");
+           		 String res = scanner.nextLine();
+				 if(res.equals("yes")){
+					if (isValidPosition(i + 1, j - 1) && gameboard[i + 1][j - 1].equals("O")) {
+                		gameboard[i + 1][j - 1] = "X";
+                	} else {
+                    	gameboard[i + 1][j + 1] = "X";
+                	}
+                	gameboard[i][j] = ".";
+                	return;
+				}
 			}
-			else {
-//PUT OUR GAME LOGIC HERE FOR X
-				
+			if(n == j){
+				//move forward 1 space
+				if(m == i + 1 && gameboard[m][n].equals(".")) {
+					gameboard[m][n] = "X";
+					gameboard[i][j] = ".";
+					return;
+				//move forward 2 spaces from starting position	
+				} else if(m == i + 2 && i == 1 && gameboard[i + 1][j].equals(".") && gameboard[m][n].equals(".")) {
+					gameboard[m][n] = "X";
+					gameboard[i][j] = ".";
+					return;
+				} else {
+					throw new IllegalArgumentException("Invalid move");
+				}
+
+			} else {
+				throw new IllegalArgumentException("Invalid move");
 			}
-		}
-		else {
-			if(!isValidPosition(position)) {
-				throw new IllegalArgumentException("Player 2's move was invalid.");
+
+ 	    } else {
+        // Player 2's turn O
+       		if (!gameboard[i][j].equals("O")) {
+            	throw new IllegalArgumentException("That's not your piece!");
+			} 
+			//check if there is pawn to capture
+			if(isValidPosition(i - 1, j - 1) && gameboard[i - 1][j - 1].equals("X") || isValidPosition(i - 1, j + 1) && gameboard[i - 1][j + 1].equals("X")) {
+				 System.out.println("There's a pawn you can capture! Do you want to capture? (yes/no)");
+           		 String res = scanner.nextLine();
+				 if(res.equals("yes")){
+					if (isValidPosition(i - 1, j - 1) && gameboard[i + 1][j - 1].equals("X")) {
+                		gameboard[i - 1][j - 1] = "O";
+                	} else {
+                    	gameboard[i - 1][j + 1] = "O";
+                	}
+                	gameboard[i][j] = ".";
+                	return;
+				}
 			}
-			else {
-//GAME  LOGIC FOR O
-				gameboard[position] = "O";
+				if(n == j){
+				//move forward 1 space	
+				if(m == i - 1 && gameboard[m][n].equals(".")) {
+					gameboard[m][n] = "O";
+					gameboard[i][j] = ".";
+					return;
+				//move forward 2 spaces from starting position	
+				} else if(m == i - 2 && i == 6 && gameboard[i - 1][j].equals(".") && gameboard[m][n].equals(".")) {
+					gameboard[m][n] = "O";
+					gameboard[i][j] = ".";
+					return;
+				} else {
+					throw new IllegalArgumentException("Invalid move");
+				}
+
+			} else {
+				throw new IllegalArgumentException("Invalid move");
 			}
-		}
+
+        
+        }
+		scanner.close();
 	}
 
 	public void play() {
