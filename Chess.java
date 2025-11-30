@@ -1,11 +1,51 @@
 import java.util.Scanner;
-//Testing pushes to github, lets see if this works! -Anastasia
+
 public class Chess extends TurnBasedGame {
-
-	String[8][8] gameboard;
-
+	public String[][] gameboard = new String[8][8];
+	
 	//make board generator
+	public String[][] initGen(){ //generates the initial board, for use later	
+		for(int i = 0; i < 8; i++){
+			for(int j = 0; j < 8; j++){
+				if(i == 1){
+					gameboard[i][j] = "B"; // black
+				}else if(i == 6){
+					gameboard[i][j] = "W"; //white
+				}else{
+					gameboard[i][j] = "."; //empty
+				}
+			}
+		}
+		return gameboard;
+	}
 
+	public void display(String[][] board){
+		for(int i = 0; i < 8; i++){
+			if(i == 0){//print out the guiding nums
+				System.out.printf("  0 1 2 3 4 5 6 7 \n");
+				System.out.printf("------------------\n");
+			}
+			for(int j = 0; j < 8; j++){
+				if(j == 0){
+					System.out.printf(""+i);
+				}
+				if(board[i][j].equals("B")){
+					System.out.printf("|B");
+				}
+				if(board[i][j].equals("W")){
+					System.out.printf("|W");
+				}
+				if(board[i][j].equals(".")){
+					System.out.printf("| ");
+				}
+				if(j == 7){
+					System.out.printf("| \n"); //cap off the end of the board
+				}
+			}
+			System.out.printf("------------------\n");
+		}
+	}
+	
 	public Chess(Player player1, Player player2) {
 		super(player1, player2);
 	}
@@ -20,57 +60,43 @@ public class Chess extends TurnBasedGame {
 	}
 
 
-//make a HasBlackOne and a HasWhiteOne
-	private boolean hasThreeInARow(String marker) {
-		boolean flag0 = gameboard[0].equals(marker);
-		boolean flag1 = gameboard[1].equals(marker);
-		boolean flag2 = gameboard[2].equals(marker);
-		boolean flag3 = gameboard[3].equals(marker);
-		boolean flag4 = gameboard[4].equals(marker);
-		boolean flag5 = gameboard[5].equals(marker);
-		boolean flag6 = gameboard[6].equals(marker);
-		boolean flag7 = gameboard[7].equals(marker);
-		boolean flag8 = gameboard[8].equals(marker);
-
-		if((flag0 && flag1 && flag2) || (flag3 && flag4 && flag5) || (flag6 && flag7 && flag8) ||
-		   (flag0 && flag3 && flag6) || (flag1 && flag4 && flag7) || (flag2 && flag5 && flag8) ||
-		   (flag0 && flag4 && flag8) || (flag2 && flag4 && flag6)) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-//delete	
-	private boolean gameboardIsFull() {
-		for (String marker : gameboard) {
-			if(marker.equals(" ")) {
-				return false;
+//make a HasBlackWon? and a HasWhiteWon?
+	private boolean hasBlackWon(){ //instead of using marker, just make individual ones for each, simpler communication
+		for(int j = 0; j < 8; j++){ //check every column of 8th row
+			if(gameboard[7][j].equals("B")){
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
-
-	private void printGameboard() {
-//make it like minesweeper
-		System.out.println(gameboard[0] + "|" + gameboard[1] + "|" + gameboard[2]);
-		System.out.println("-----");
-		System.out.println(gameboard[3] + "|" + gameboard[4] + "|" + gameboard[5]);
-		System.out.println("-----");
-		System.out.println(gameboard[6] + "|" + gameboard[7] + "|" + gameboard[8]);
+	private boolean hasWhiteWon(){
+		for(int j = 0; j < 8; j++){
+			if(gameboard[0][j].equals("W")){
+				return true;
+			}
+		}
+		return false;
 	}
-
+	
 	private void printWinner() {
 //customize to fit our game
-		if(hasThreeInARow("X")) {
-			System.out.println("*** " + player1.getName() + " wins! ***");
+		if(hasWhiteWon()) {
+			System.out.println("*** " + player1.getName() + " wins, playing with the white pieces! ***");
 		}
-		else if(hasThreeInARow("O")) {
-			System.out.println("*** " + player2.getName() + " wins! ***");
+		else if(hasBlackWon()) {
+			System.out.println("*** " + player2.getName() + " wins, playing with the black pieces! ***");
 		}
 		else {
 			System.out.println("*** " + player1.getName() + " and " + player2.getName() + " tie! ***");
 		}
+	}
+	
+	public void evaluateMove(String move){ //this needs to be here to stop java from complaining about turnbasedgame.java already having an abstract evaluateMove(String)
+		int m = Integer.parseInt(move.substring(0,1));
+		int n = Integer.parseInt(move.substring(1,2));
+		int i = Integer.parseInt(move.substring(2,3));
+		int j = Integer.parseInt(move.substring(3,4));
+		evaluateMove(m,n,i,j);
 	}
 
 	protected void evaluateMove(int m, int n, int i, int j) {
@@ -79,10 +105,10 @@ public class Chess extends TurnBasedGame {
        	 throw new IllegalArgumentException("Position out of bounds");
         }
 
-		//player 1's turn X
+		//player 1's turn White
 		if (isFirstPlayerTurn()) {
 			//check if piece belongs to player
-        	if (!gameboard[i][j].equals("X")) {
+        	if (!gameboard[i][j].equals("W")) {
            		throw new IllegalArgumentException("That's not your piece!");
         	}
 			//check if there is pawn to capture
@@ -90,10 +116,10 @@ public class Chess extends TurnBasedGame {
 				 System.out.println("There's a pawn you can capture! Do you want to capture? (yes/no)");
            		 String res = scanner.nextLine();
 				 if(res.equals("yes")){
-					if (isValidPosition(i + 1, j - 1) && gameboard[i + 1][j - 1].equals("O")) {
-                		gameboard[i + 1][j - 1] = "X";
+					if (isValidPosition(i + 1, j - 1) && gameboard[i + 1][j - 1].equals("B")) {
+                		gameboard[i + 1][j - 1] = "W";
                 	} else {
-                    	gameboard[i + 1][j + 1] = "X";
+                    	gameboard[i + 1][j + 1] = "W";
                 	}
                 	gameboard[i][j] = ".";
                 	return;
@@ -102,12 +128,12 @@ public class Chess extends TurnBasedGame {
 			if(n == j){
 				//move forward 1 space
 				if(m == i + 1 && gameboard[m][n].equals(".")) {
-					gameboard[m][n] = "X";
+					gameboard[m][n] = "W";
 					gameboard[i][j] = ".";
 					return;
 				//move forward 2 spaces from starting position	
 				} else if(m == i + 2 && i == 1 && gameboard[i + 1][j].equals(".") && gameboard[m][n].equals(".")) {
-					gameboard[m][n] = "X";
+					gameboard[m][n] = "W";
 					gameboard[i][j] = ".";
 					return;
 				} else {
@@ -119,19 +145,19 @@ public class Chess extends TurnBasedGame {
 			}
 
  	    } else {
-        // Player 2's turn O
-       		if (!gameboard[i][j].equals("O")) {
+        // Player 2's turn Black (o=B, X=W)
+       		if (!gameboard[i][j].equals("B")) {
             	throw new IllegalArgumentException("That's not your piece!");
 			} 
 			//check if there is pawn to capture
-			if(isValidPosition(i - 1, j - 1) && gameboard[i - 1][j - 1].equals("X") || isValidPosition(i - 1, j + 1) && gameboard[i - 1][j + 1].equals("X")) {
+			if(isValidPosition(i - 1, j - 1) && gameboard[i - 1][j - 1].equals("W") || isValidPosition(i - 1, j + 1) && gameboard[i - 1][j + 1].equals("W")) {
 				 System.out.println("There's a pawn you can capture! Do you want to capture? (yes/no)");
            		 String res = scanner.nextLine();
 				 if(res.equals("yes")){
-					if (isValidPosition(i - 1, j - 1) && gameboard[i + 1][j - 1].equals("X")) {
-                		gameboard[i - 1][j - 1] = "O";
+					if (isValidPosition(i - 1, j - 1) && gameboard[i + 1][j - 1].equals("W")) {
+                		gameboard[i - 1][j - 1] = "B";
                 	} else {
-                    	gameboard[i - 1][j + 1] = "O";
+                    	gameboard[i - 1][j + 1] = "B";
                 	}
                 	gameboard[i][j] = ".";
                 	return;
@@ -140,12 +166,12 @@ public class Chess extends TurnBasedGame {
 				if(n == j){
 				//move forward 1 space	
 				if(m == i - 1 && gameboard[m][n].equals(".")) {
-					gameboard[m][n] = "O";
+					gameboard[m][n] = "B";
 					gameboard[i][j] = ".";
 					return;
 				//move forward 2 spaces from starting position	
 				} else if(m == i - 2 && i == 6 && gameboard[i - 1][j].equals(".") && gameboard[m][n].equals(".")) {
-					gameboard[m][n] = "O";
+					gameboard[m][n] = "B";
 					gameboard[i][j] = ".";
 					return;
 				} else {
@@ -158,20 +184,21 @@ public class Chess extends TurnBasedGame {
 
         
         }
-		scanner.close();
+		//scanner.close();
 	}
-
+	
 	public void play() {
 		System.out.println("=== Game Started ===\n");
-		System.out.println("Numbers 0 through 8 are valid inputs\n");
-		printGameboard();
+		System.out.printf("Input 4 numbers: the first two are the row and column of the piece you want to move, and the second two are the row and column of where you want it to move. Ex: '1323'\n");
+		gameboard = initGen();
+		display(gameboard);		
 		System.out.println();
 //replace with check O & X wins
-		while(!hasThreeInARow("X") && !hasThreeInARow("O") && !gameboardIsFull()) {
+		while(!hasWhiteWon() && !hasBlackWon()) {
 			System.out.println("* " + getCurrentPlayerName() + "'s Turn *");
 			playOneTurn();
 			System.out.println();
-			printGameboard();
+			display(gameboard);
 			System.out.println();
 		}
 
