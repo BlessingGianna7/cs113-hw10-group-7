@@ -102,14 +102,18 @@ public class Chess extends TurnBasedGame {
 	protected void evaluateMove(int i, int j, int m, int n) {
 	    Scanner scanner = new Scanner(System.in);
  		if (!isValidPosition(i, j) || !isValidPosition(m, n)) {
-       	 throw new IllegalArgumentException("Position out of bounds");
+			System.out.printf("Invalid position, skipping your turn.");
+			return;
+//       	 throw new IllegalArgumentException("Position out of bounds");
         }
 
 		//player 1's turn White
 		if (isFirstPlayerTurn()) {
 			//check if piece belongs to player
         	if (!gameboard[i][j].equals("W")) {
-           		throw new IllegalArgumentException("That's not your piece!");
+				System.out.printf("Not your piece, skipping your turn.");
+				return;
+           		//throw new IllegalArgumentException("That's not your piece!");
         	}
 			//check if there is pawn to capture
 			if(isValidPosition(i - 1, j - 1) && gameboard[i - 1][j - 1].equals("B") || isValidPosition(i - 1, j + 1) && gameboard[i - 1][j + 1].equals("B")) {
@@ -147,7 +151,9 @@ public class Chess extends TurnBasedGame {
  	    } else {
         // Player 2's turn Black (o=B, X=W)
        		if (!gameboard[i][j].equals("B")) {
-            	throw new IllegalArgumentException("That's not your piece!");
+       			System.out.printf("Not your piece, skipping your turn");
+       			return;
+            	//throw new IllegalArgumentException("That's not your piece!");
 			} 
 			//check if there is pawn to capture
 			if(isValidPosition(i + 1, j - 1) && gameboard[i + 1][j - 1].equals("W") || isValidPosition(i + 1, j + 1) && gameboard[i + 1][j + 1].equals("W")) {
@@ -175,6 +181,7 @@ public class Chess extends TurnBasedGame {
 					gameboard[i][j] = ".";
 					return;
 				} else {
+
 					throw new IllegalArgumentException("Invalid move");
 				}
 
