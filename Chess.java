@@ -92,14 +92,14 @@ public class Chess extends TurnBasedGame {
 	}
 	
 	public void evaluateMove(String move){ //this needs to be here to stop java from complaining about turnbasedgame.java already having an abstract evaluateMove(String)
-		int m = Integer.parseInt(move.substring(0,1));
-		int n = Integer.parseInt(move.substring(1,2));
-		int i = Integer.parseInt(move.substring(2,3));
-		int j = Integer.parseInt(move.substring(3,4));
-		evaluateMove(m,n,i,j);
+		int i = Integer.parseInt(move.substring(0,1));
+		int j = Integer.parseInt(move.substring(1,2));
+		int m = Integer.parseInt(move.substring(2,3));
+		int n = Integer.parseInt(move.substring(3,4));
+		evaluateMove(i,j,m,n);
 	}
 
-	protected void evaluateMove(int m, int n, int i, int j) {
+	protected void evaluateMove(int i, int j, int m, int n) {
 	    Scanner scanner = new Scanner(System.in);
  		if (!isValidPosition(i, j) || !isValidPosition(m, n)) {
        	 throw new IllegalArgumentException("Position out of bounds");
