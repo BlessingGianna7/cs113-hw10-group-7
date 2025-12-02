@@ -112,14 +112,14 @@ public class Chess extends TurnBasedGame {
            		throw new IllegalArgumentException("That's not your piece!");
         	}
 			//check if there is pawn to capture
-			if(isValidPosition(i + 1, j - 1) && gameboard[i + 1][j - 1].equals("O") || isValidPosition(i + 1, j + 1) && gameboard[i + 1][j + 1].equals("O")) {
+			if(isValidPosition(i - 1, j - 1) && gameboard[i - 1][j - 1].equals("B") || isValidPosition(i - 1, j + 1) && gameboard[i - 1][j + 1].equals("B")) {
 				 System.out.println("There's a pawn you can capture! Do you want to capture? (yes/no)");
            		 String res = scanner.nextLine();
 				 if(res.equals("yes")){
-					if (isValidPosition(i + 1, j - 1) && gameboard[i + 1][j - 1].equals("B")) {
-                		gameboard[i + 1][j - 1] = "W";
+					if (isValidPosition(i - 1, j - 1) && gameboard[i - 1][j - 1].equals("B")) {
+                		gameboard[i - 1][j - 1] = "W";
                 	} else {
-                    	gameboard[i + 1][j + 1] = "W";
+                    	gameboard[i - 1][j + 1] = "W";
                 	}
                 	gameboard[i][j] = ".";
                 	return;
@@ -127,12 +127,12 @@ public class Chess extends TurnBasedGame {
 			}
 			if(n == j){
 				//move forward 1 space
-				if(m == i + 1 && gameboard[m][n].equals(".")) {
+				if(m == i - 1 && gameboard[m][n].equals(".")) {
 					gameboard[m][n] = "W";
 					gameboard[i][j] = ".";
 					return;
 				//move forward 2 spaces from starting position	
-				} else if(m == i + 2 && i == 1 && gameboard[i + 1][j].equals(".") && gameboard[m][n].equals(".")) {
+				} else if(m == i - 2 && i == 6 && gameboard[i - 1][j].equals(".") && gameboard[m][n].equals(".")) {
 					gameboard[m][n] = "W";
 					gameboard[i][j] = ".";
 					return;
@@ -150,14 +150,14 @@ public class Chess extends TurnBasedGame {
             	throw new IllegalArgumentException("That's not your piece!");
 			} 
 			//check if there is pawn to capture
-			if(isValidPosition(i - 1, j - 1) && gameboard[i - 1][j - 1].equals("W") || isValidPosition(i - 1, j + 1) && gameboard[i - 1][j + 1].equals("W")) {
+			if(isValidPosition(i + 1, j - 1) && gameboard[i + 1][j - 1].equals("W") || isValidPosition(i + 1, j + 1) && gameboard[i + 1][j + 1].equals("W")) {
 				 System.out.println("There's a pawn you can capture! Do you want to capture? (yes/no)");
            		 String res = scanner.nextLine();
 				 if(res.equals("yes")){
-					if (isValidPosition(i - 1, j - 1) && gameboard[i + 1][j - 1].equals("W")) {
-                		gameboard[i - 1][j - 1] = "B";
+					if (isValidPosition(i + 1, j - 1) && gameboard[i + 1][j - 1].equals("W")) {
+                		gameboard[i + 1][j - 1] = "B";
                 	} else {
-                    	gameboard[i - 1][j + 1] = "B";
+                    	gameboard[i + 1][j + 1] = "B";
                 	}
                 	gameboard[i][j] = ".";
                 	return;
@@ -165,12 +165,12 @@ public class Chess extends TurnBasedGame {
 			}
 				if(n == j){
 				//move forward 1 space	
-				if(m == i - 1 && gameboard[m][n].equals(".")) {
+				if(m == i + 1 && gameboard[m][n].equals(".")) {
 					gameboard[m][n] = "B";
 					gameboard[i][j] = ".";
 					return;
 				//move forward 2 spaces from starting position	
-				} else if(m == i - 2 && i == 6 && gameboard[i - 1][j].equals(".") && gameboard[m][n].equals(".")) {
+				} else if(m == i + 2 && i == 1 && gameboard[i + 1][j].equals(".") && gameboard[m][n].equals(".")) {
 					gameboard[m][n] = "B";
 					gameboard[i][j] = ".";
 					return;
